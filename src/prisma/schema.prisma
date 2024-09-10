@@ -2,7 +2,7 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 datasource db {
-  provider = "mysql"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
@@ -10,8 +10,63 @@ generator client {
   provider = "prisma-client-js"
 }
 
+enum Role {
+  user
+  admin
+  modo
+}
+
 model User {
-  id       Int    @id @default(autoincrement())
-  email    String @unique
-  password String
+  id              String        @id @default(auto()) @map("_id") @db.ObjectId
+  email           String        @unique
+  password        String
+  pseudo          String        @unique
+  first_name      String?
+  last_name       String?
+  photo_profil    String
+  role            Role          @default(user)
+  created_at      String
+  last_connection String        @default("")
+  article         Article[]
+  like            Like[]
+  commentaire     Commentaire[]
+}
+
+model Article {
+  id          String        @id @default(auto()) @map("_id") @db.ObjectId
+  title       String
+  created_at  String
+  updated_at  String
+  userId      String        @db.ObjectId
+  user        User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  media       Media[]
+  like        Like[]
+  commentaire Commentaire[]
+}
+
+model Media {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  url       String[]
+  articleId String   @db.ObjectId
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  id        String  @id @default(auto()) @map("_id") @db.ObjectId
+  status    Boolean @default(false)
+  articleId String  @db.ObjectId
+  article   Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  userId    String  @db.ObjectId
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Commentaire {
+  id         String  @id @default(auto()) @map("_id") @db.ObjectId
+  message    String
+  created_at String
+  updated_at String
+  articleId  String  @db.ObjectId
+  article    Article @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  userId     String  @db.ObjectId
+  user       User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
