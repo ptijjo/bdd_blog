@@ -39,27 +39,27 @@ export class UpdateUserDto {
   @IsNotEmpty()
   @MinLength(9)
   @MaxLength(32)
-  public password: string;
+  public password?: string;
 
   @IsString()
   @IsNotEmpty()
   @MinLength(2)
   @MaxLength(32)
-  public pseudo: string;
+  public pseudo?: string;
 
   @IsString()
   @IsNotEmpty()
   @MinLength(2)
   @MaxLength(32)
-  public first_name: string;
+  public first_name?: string;
 
   @IsString()
   @IsNotEmpty()
   @MinLength(2)
   @MaxLength(32)
-  public last_name: string;
+  public last_name?: string;
 
   @IsString()
   @IsNotEmpty()
-  public photo_profil: string;
+  public photo_profil?: string;
 }
